@@ -76,3 +76,19 @@ CREATE TABLE IF NOT EXISTS `#__wsmusic_playlist` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
+
+-- -----------------------------------------------------
+-- Add 3 sample users
+-- -----------------------------------------------------
+INSERT INTO `never_users` (`id`, `name`, `username`, `email`, `password`, `block`, `sendEmail`, `registerDate`, `lastvisitDate`, `activation`, `params`, `lastResetTime`, `resetCount`, `otpKey`, `otep`) VALUES
+(755, 'Maria Obama', 'mabama', 'maria.obama@shit.com', '$P$DYeUS3VrqTYpqxsipGqdYLhUUTLy4E/', 0, 0, '2014-03-20 10:52:46', '0000-00-00 00:00:00', '', '{"admin_style":"","admin_language":"","language":"","editor":"","helpsite":"","timezone":""}', '0000-00-00 00:00:00', 0, '', ''),
+(756, 'gay man', 'gayman', 'gay@man.com', '$P$DN515cOXhX.iDVhepc8nRO/nZOpP7f1', 0, 0, '2014-03-20 10:59:11', '0000-00-00 00:00:00', '', '{"admin_style":"","admin_language":"","language":"","editor":"","helpsite":"","timezone":""}', '0000-00-00 00:00:00', 0, '', ''),
+(757, 'Doãn Chi Lâm', 'lamchidoan', 'lam@doan.com', '$P$D9wNg.8omW2rBc3N7q2Im0ec7oFg5h/', 0, 0, '2014-03-20 11:05:10', '0000-00-00 00:00:00', '', '{"admin_style":"","admin_language":"","language":"","editor":"","helpsite":"","timezone":""}', '0000-00-00 00:00:00', 0, '', '');
+
+-- -----------------------------------------------------
+-- add 3 users 's right
+-- -----------------------------------------------------
+INSERT INTO `never_user_usergroup_map` (`user_id`, `group_id`) VALUES
+(755, 6),
+(756, 4),
+(757, 2);
