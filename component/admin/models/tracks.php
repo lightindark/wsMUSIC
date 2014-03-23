@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     wsmusic backend
+ * @package     Joomla.Administrator
  * @subpackage  com_wsmusic
- * @version 	0.0.1
- * @copyright   Copyright (C) 2005 - 2014 WebSoc company
+ *
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,6 +11,11 @@ defined('_JEXEC') or die;
 
 /**
  * tracks model.
+ *
+ * @package     Joomla.Administrator
+ * @subpackage  com_content
+ *
+ * @since       1.6
  */
 class WsmusicModelTracks extends JModelList
 {
@@ -19,7 +24,7 @@ class WsmusicModelTracks extends JModelList
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
 	 *
-	 * @since   1.6
+	 * @since   0.0.1
 	 * @see     JController
 	 */
 	public function __construct($config = array())
@@ -37,7 +42,6 @@ class WsmusicModelTracks extends JModelList
 				'created', 't.created',
 				'created_by', 't.created_by',
 				'ordering', 't.ordering',
-				'language', 't.language',
 				'hits', 't.hits',
 				'downloads', 't.downloads',
 				'publish_up', 't.publish_up',
@@ -89,9 +93,11 @@ class WsmusicModelTracks extends JModelList
 		$tag = $this->getUserStateFromRequest($this->context . '.filter.tag', 'filter_tag', '');
 		$this->setState('filter.tag', $tag);
 
-		// List state information.
-		parent::populateState('t.id', 'desc');
+		$artistId = $this->getUserStateFromRequest($this->context . '.filter.artist_id', 'filter_artist_id');
+		$this->setState('filter.artist_id', $artistId);
 
+		// List state information.
+		parent::populateState('t.title', 'desc');
 	}
 
 	/**
@@ -115,6 +121,7 @@ class WsmusicModelTracks extends JModelList
 		$id .= ':' . $this->getState('filter.published');
 		$id .= ':' . $this->getState('filter.category_id');
 		$id .= ':' . $this->getState('filter.author_id');
+		$id .= ':' . $this->getState('filter.artist_id');
 
 		return parent::getStoreId($id);
 	}
@@ -139,13 +146,13 @@ class WsmusicModelTracks extends JModelList
 			$this->getState(
 				'list.select',
 				't.id, t.title, t.alias, t.catid' .
-					', t.state, t.access, t.created, t.created_by, t.ordering, t.featured, t.language, t.hits' .
-					', t.publish_up, t.artist, t.video'
+					', t.state, t.access, t.created, t.created_by, t.ordering, t.featured, t.hits' .
+					', t.publish_up, t.artist, t.video, t.downloads'
 			)
 		);
 		$query->from('#__wsmusic_track AS t');
 
-		//Join over the artist
+		// Join over the artist
 		$query->select('a.name AS artist_name,a.id AS artist_id')
 		->join('LEFT', $db->quoteName('#__wsmusic_artist') . ' AS a ON a.id = t.artist');
 
@@ -222,6 +229,58 @@ class WsmusicModelTracks extends JModelList
 			$query->where('t.created_by ' . $type . (int) $authorId);
 		}
 
+		// Filter by artist
+		$artistId = $this->getState('filter.artist_id');
+
+		if (is_numeric($artistId))
+		{
+			$type = $this->getState('filter.artist_id.include', true) ? '= ' : '<>';
+			$query->where('t.artist ' . $type . (int) $artistId);
+		}
+
+		// Filter by day
+		$day = $this->getState('filter.day');
+
+		if (is_numeric($day))
+		{
+			$type = $this->getState('filter.day.include', true) ? '= ' : '<>';
+			$query->where('day(t.created) ' . $type . (int) $day);
+		}
+
+		// Filter by month
+		$month = $this->getState('filter.month');
+
+		if (is_numeric($month))
+		{
+			$type = $this->getState('filter.month.include', true) ? '= ' : '<>';
+			$query->where('month(t.created) ' . $type . (int) $month);
+		}
+
+		// Filter by year
+		$year = $this->getState('filter.year');
+
+		if (is_numeric($year))
+		{
+			$type = $this->getState('filter.year.include', true) ? '= ' : '<>';
+			$query->where('year(t.created) ' . $type . (int) $year);
+		}
+
+		// Filter by hits
+		$hits = $this->getState('filter.hits');
+
+		if (is_numeric($hits))
+		{
+			$query->where('t.hits >= ' . (int) $hits);
+		}
+
+		// Filter by downloads
+		$downloads = $this->getState('filter.downloads');
+
+		if (is_numeric($downloads))
+		{
+			$query->where('downloads >= ' . (int) $downloads);
+		}
+
 		// Filter by search in title.
 		$search = $this->getState('filter.search');
 
@@ -245,7 +304,7 @@ class WsmusicModelTracks extends JModelList
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering', 't.title');
-		$orderDirn = $this->state->get('list.direction', 'asc');
+		$orderDirn = $this->state->get('list.direction', 'desc');
 
 		if ($orderCol == 't.ordering' || $orderCol == 'category_title')
 		{
