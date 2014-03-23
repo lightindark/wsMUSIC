@@ -49,14 +49,12 @@ $sortFields = $this->getSortFields();
 </script>
 
 <form action="<?php echo JRoute::_('index.php?option=com_wsmusic&view=tracks'); ?>" method="post" name="adminForm" id="adminForm">
-<?php if (!empty( $this->sidebar)) : ?>
-	<div id="j-sidebar-container" class="span2">
-		<?php echo $this->sidebar; ?>
-	</div>
-	<div id="j-main-container" class="span10">
-<?php else : ?>
 	<div id="j-main-container">
-<?php endif;?>
+		<div id='submenu'>
+			<?php foreach ($this->submenu as $key => $value): ?>
+					<a class="center" href='<?php echo $value[1]; ?>'><?php echo $value[0]; ?></a>
+			<?php endforeach; ?>
+		</div>
 		<?php
 		// Search tools bar
 		echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
@@ -103,18 +101,19 @@ $sortFields = $this->getSortFields();
 				</thead>
 				<tbody>
 				<?php foreach ($this->items as $i => $item) :
-					$item->max_ordering = 0; //??
+					$item->max_ordering = 0;
 					$ordering   = ($listOrder == 'a.ordering');
-					$canCreate  = $user->authorise('core.create',     'com_wsmusic.category.'.$item->catid);
-					$canEdit    = $user->authorise('core.edit',       'com_wsmusic.track.'.$item->id);
+					$canCreate  = $user->authorise('core.create',     'com_wsmusic.category.' . $item->catid);
+					$canEdit    = $user->authorise('core.edit',       'com_wsmusic.track.' . $item->id);
 
-					$canEditOwn = $user->authorise('core.edit.own',   'com_wsmusic.track.'.$item->id) && $item->created_by == $userId;
-					$canChange  = $user->authorise('core.edit.state', 'com_wsmusic.track.'.$item->id);
+					$canEditOwn = $user->authorise('core.edit.own',   'com_wsmusic.track.' . $item->id) && $item->created_by == $userId;
+					$canChange  = $user->authorise('core.edit.state', 'com_wsmusic.track.' . $item->id);
 					?>
 					<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid; ?>">
 						<td class="order nowrap center hidden-phone">
 							<?php
 							$iconClass = '';
+
 							if (!$canChange)
 							{
 								$iconClass = ' inactive';
@@ -176,7 +175,7 @@ $sortFields = $this->getSortFields();
 							<?php echo $this->escape($item->access_level); ?>
 						</td>
 						<td class="small hidden-phone">
-							<a href="<?php echo JRoute::_('index.php?option=com_users&task=user.edit&id='.(int) $item->created_by); ?>" title="<?php echo JText::_('JAUTHOR'); ?>">
+							<a href="<?php echo JRoute::_('index.php?option=com_users&task=user.edit&id=' . (int) $item->created_by); ?>" title="<?php echo JText::_('JAUTHOR'); ?>">
 							<?php echo $this->escape($item->author_name); ?></a>
 						</td>
 						<td class="small hidden-phone">

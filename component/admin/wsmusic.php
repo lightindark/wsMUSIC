@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     wsmusic backend
+ * @package     Joomla.Administrator
  * @subpackage  com_wsmusic
- * @version 	0.0.1
- * @copyright   Copyright (C) 2005 - 2014 WebSoc company
+ *
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -16,8 +16,8 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_content'))
 	return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
-JLoader::register('WsmusicHelper', dirname(__FILE__) . '/helpers/wsmusichelper.php');
+JLoader::register('WsmusicHelper', dirname(__FILE__) . '/helpers/wsmusic.php');
 
-$controller=JControllerLegacy::getInstance('wsmusic');
+$controller = JControllerLegacy::getInstance('wsmusic');
 $controller->execute(JFactory::getApplication()->input->get('task'));
 $controller->redirect();

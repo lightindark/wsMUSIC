@@ -63,7 +63,7 @@ class WsmusicViewTracks extends JViewLegacy
 
 		// Add toolbar and sidebar
 		$this->addToolbar();
-		$this->sidebar = JHtmlSidebar::render();
+		$this->submenu = JHtmlSidebar::getEntries();
 
 		parent::display($tpl);
 	}
