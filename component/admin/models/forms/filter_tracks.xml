@@ -67,6 +67,30 @@
 		>
 			<option value="">JOPTION_SELECT_TAG</option>
 		</field>
+		<field 
+			name="hits" 
+			type="newinteger" 
+			defaultoptkey="hits"
+			label="Choose an integer" 
+			description=""
+			first="100" 
+			last="100000000" 
+			step="1000"
+			newstep="5"
+			onchange="this.form.submit();"
+			 />
+		<field 
+			name="downloads" 
+			type="newinteger" 
+			defaultoptkey="downloads"
+			label="Choose an integer" 
+			description=""
+			first="100" 
+			last="100000000" 
+			step="1000"
+			newstep="5"
+			onchange="this.form.submit();"
+			 />
 		<field
 			name="day"
 			type="list"
